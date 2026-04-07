@@ -5,8 +5,8 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useRunStore } from '@/store/useRunStore'
 
-import snowParticleVert from '@/shaders/snow-particle.vert.glsl'
-import snowParticleFrag from '@/shaders/snow-particle.frag.glsl'
+import snowParticleVert from '@/shaders/snow-particle.vert'
+import snowParticleFrag from '@/shaders/snow-particle.frag'
 
 const COUNT = 4000
 
@@ -41,8 +41,8 @@ export default function SnowParticles() {
     geo.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1))
 
     const mat = new THREE.ShaderMaterial({
-      vertexShader: snowParticleVert as string,
-      fragmentShader: snowParticleFrag as string,
+      vertexShader: snowParticleVert,
+      fragmentShader: snowParticleFrag,
       uniforms: {
         uTime: { value: 0 },
         uWindX: { value: 0 },

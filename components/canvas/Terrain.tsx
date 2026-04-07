@@ -5,9 +5,8 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { generateHeightmap, TERRAIN_SIZE, HMAP_SIZE } from '@/lib/terrain'
 
-// Import shaders as raw strings (via next.config.ts webpack rule)
-import terrainVert from '@/shaders/terrain.vert.glsl'
-import terrainFrag from '@/shaders/terrain.frag.glsl'
+import terrainVert from '@/shaders/terrain.vert'
+import terrainFrag from '@/shaders/terrain.frag'
 
 export default function Terrain() {
   const geometry = useMemo(() => {
@@ -38,8 +37,8 @@ export default function Terrain() {
   const material = useMemo(
     () =>
       new THREE.ShaderMaterial({
-        vertexShader: terrainVert as string,
-        fragmentShader: terrainFrag as string,
+        vertexShader: terrainVert,
+        fragmentShader: terrainFrag,
         uniforms: {
           uTime: { value: 0 },
           uSnowColor: { value: new THREE.Color('#EEF2FF') },

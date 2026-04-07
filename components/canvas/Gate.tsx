@@ -6,7 +6,7 @@ import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 import type { NodeData } from '@/types'
 
-import gateGlowFrag from '@/shaders/gate-glow.frag.glsl'
+import gateGlowFrag from '@/shaders/gate-glow.frag'
 
 interface GateProps {
   node: NodeData
@@ -27,7 +27,7 @@ export default function Gate({ node }: GateProps) {
     () =>
       new THREE.ShaderMaterial({
         vertexShader: PASS_VERT,
-        fragmentShader: gateGlowFrag as string,
+        fragmentShader: gateGlowFrag,
         uniforms: {
           uTime: { value: 0 },
           uColor: { value: new THREE.Color(node.color) },
