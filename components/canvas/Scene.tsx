@@ -9,7 +9,6 @@ import Trees from './Trees'
 import SnowParticles from './SnowParticles'
 import CameraRig from './CameraRig'
 import ProjectNodes from './ProjectNodes'
-import PostFX from './PostFX'
 
 export default function Scene() {
   const { scene } = useThree()
@@ -43,7 +42,6 @@ export default function Scene() {
       <SnowParticles />
       <ProjectNodes />
       <CameraRig />
-      <PostFX />
     </>
   )
 }

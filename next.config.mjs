@@ -5,6 +5,7 @@ const nextConfig = {
     '@react-three/fiber',
     '@react-three/drei',
     '@react-three/postprocessing',
+    'simplex-noise',
   ],
   webpack(config) {
     config.module.rules.push({
