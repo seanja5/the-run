@@ -20,7 +20,7 @@
     "react": "^18",
     "react-dom": "^18",
     "simplex-noise": "^4",
-    "three": "^0.165",
+    "three": "0.170.0",
     "zustand": "^4"
   },
   "devDependencies": {
@@ -28,7 +28,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/three": "^0.165",
+    "@types/three": "^0.170.0",
     "autoprefixer": "^10",
     "eslint": "^8",
     "eslint-config-next": "14.2.29",

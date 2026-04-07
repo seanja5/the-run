@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { generateHeightmap, TERRAIN_SIZE, HMAP_SIZE } from '@/lib/terrain'
@@ -10,8 +10,6 @@ import terrainVert from '@/shaders/terrain.vert.glsl'
 import terrainFrag from '@/shaders/terrain.frag.glsl'
 
 export default function Terrain() {
-  const matRef = useRef<THREE.ShaderMaterial>(null)
-
   const geometry = useMemo(() => {
     const geo = new THREE.PlaneGeometry(
       TERRAIN_SIZE,
@@ -52,11 +50,10 @@ export default function Terrain() {
     []
   )
 
+  // material is a stable useMemo reference — update uniforms directly, no ref needed
   useFrame(({ clock }) => {
-    if (matRef.current) {
-      matRef.current.uniforms.uTime.value = clock.elapsedTime
-    }
+    material.uniforms.uTime.value = clock.elapsedTime
   })
 
-  return <mesh geometry={geometry} material={material} ref={matRef as any} receiveShadow={false} />
+  return <mesh geometry={geometry} material={material} receiveShadow={false} />
 }

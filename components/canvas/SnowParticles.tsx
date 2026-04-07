@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useRunStore } from '@/store/useRunStore'
@@ -11,7 +11,6 @@ import snowParticleFrag from '@/shaders/snow-particle.frag.glsl'
 const COUNT = 4000
 
 export default function SnowParticles() {
-  const matRef = useRef<THREE.ShaderMaterial>(null)
   const lateralVelocity = useRunStore((s) => s.lateralVelocity)
 
   const { geometry, material } = useMemo(() => {
@@ -57,19 +56,17 @@ export default function SnowParticles() {
     return { geometry: geo, material: mat }
   }, [])
 
-  useFrame(({ clock, camera }) => {
-    if (!matRef.current) return
-    matRef.current.uniforms.uTime.value = clock.elapsedTime
-    // Wind increases with carving, particles follow camera Z
-    matRef.current.uniforms.uWindX.value = lateralVelocity * 0.08
-    matRef.current.uniforms.uSpeed.value = 1.0 + Math.abs(lateralVelocity) * 0.3
+  // material is a stable useMemo reference — update uniforms directly, no ref needed
+  useFrame(({ clock }) => {
+    material.uniforms.uTime.value = clock.elapsedTime
+    material.uniforms.uWindX.value = lateralVelocity * 0.08
+    material.uniforms.uSpeed.value = 1.0 + Math.abs(lateralVelocity) * 0.3
   })
 
   return (
     <points
       geometry={geometry}
       material={material}
-      ref={matRef as any}
       position={[0, 30, 0]}
       frustumCulled={false}
     />
