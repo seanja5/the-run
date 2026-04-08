@@ -18,8 +18,8 @@ export default function RunExperience() {
         style={{ position: 'absolute', inset: 0 }}
         onCreated={({ gl }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace
-          gl.toneMapping = THREE.LinearToneMapping
-          gl.toneMappingExposure = 1.0
+          gl.toneMapping = THREE.ACESFilmicToneMapping
+          gl.toneMappingExposure = 0.48
         }}
       >
         <SceneErrorBoundary>

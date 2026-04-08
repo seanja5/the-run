@@ -10,12 +10,13 @@ export default function Lighting() {
   const timeOfDay = useSceneStore((s) => s.timeOfDay)
   const cfg = TIME_CONFIGS[resolveTime(timeOfDay)]
 
-  const dirRef = useRef<THREE.DirectionalLight>(null)
+  const dirRef  = useRef<THREE.DirectionalLight>(null)
   const hemiRef = useRef<THREE.HemisphereLight>(null)
-  const ambRef = useRef<THREE.AmbientLight>(null)
+  const ambRef  = useRef<THREE.AmbientLight>(null)
 
+  // Fog — let Sky.tsx own scene.background for day/dusk/dawn
+  // Lighting.tsx sets fog so distant terrain fades naturally
   useEffect(() => {
-    scene.background = new THREE.Color(cfg.bgColor)
     scene.fog = new THREE.FogExp2(new THREE.Color(cfg.fogColor), cfg.fogDensity)
   }, [scene, cfg])
 
@@ -25,17 +26,11 @@ export default function Lighting() {
       dirRef.current.intensity = cfg.sunIntensity
       dirRef.current.position.set(...cfg.sunPosition)
     }
-  }, [cfg])
-
-  useEffect(() => {
     if (hemiRef.current) {
       hemiRef.current.color.set(cfg.hemiTop)
       hemiRef.current.groundColor.set(cfg.hemiGround)
       hemiRef.current.intensity = cfg.hemiIntensity
     }
-  }, [cfg])
-
-  useEffect(() => {
     if (ambRef.current) {
       ambRef.current.color.set(cfg.ambientColor)
       ambRef.current.intensity = cfg.ambientIntensity

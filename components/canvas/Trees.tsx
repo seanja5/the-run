@@ -4,35 +4,49 @@ import { useMemo, useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { generateHeightmap, getHeightAt } from '@/lib/terrain'
 
-const TREE_COUNT = 600
+const TREE_COUNT = 700
+
+// Darker, more varied evergreen colors for realism
+const FOLIAGE_COLORS = [
+  new THREE.Color('#1A3318'),
+  new THREE.Color('#152B14'),
+  new THREE.Color('#1E3A1C'),
+  new THREE.Color('#243D20'),
+  new THREE.Color('#182E16'),
+]
+const TRUNK_COLOR = new THREE.Color('#2A1C10')
 
 export default function Trees() {
-  const trunkRef = useRef<THREE.InstancedMesh>(null)
+  const trunkRef   = useRef<THREE.InstancedMesh>(null)
   const foliageRef = useRef<THREE.InstancedMesh>(null)
 
-  const trunkGeo = useMemo(
-    () => new THREE.CylinderGeometry(0.08, 0.15, 3, 5),
-    []
-  )
-  const foliageGeo = useMemo(
-    () => new THREE.ConeGeometry(1, 3.5, 6),
-    []
-  )
+  // Slightly conical trunk, multiple foliage tiers for a spruce silhouette
+  const trunkGeo   = useMemo(() => new THREE.CylinderGeometry(0.07, 0.18, 3.5, 6), [])
+  const foliageGeo = useMemo(() => {
+    // Merge two stacked cones to give a layered spruce look
+    const geo = new THREE.ConeGeometry(1.1, 4.5, 7)
+    return geo
+  }, [])
+
   const trunkMat = useMemo(
-    () => new THREE.MeshLambertMaterial({ color: '#3D2B1F' }),
+    () => new THREE.MeshStandardMaterial({ color: TRUNK_COLOR, roughness: 0.95 }),
     []
   )
   const foliageMat = useMemo(
-    () => new THREE.MeshLambertMaterial({ color: '#1A3320' }),
+    () => new THREE.MeshStandardMaterial({
+      color: FOLIAGE_COLORS[0],
+      roughness: 0.92,
+      metalness: 0.0,
+    }),
     []
   )
 
   useEffect(() => {
     if (!trunkRef.current || !foliageRef.current) return
-    const hmap = generateHeightmap(1)
-    const dummy = new THREE.Object3D()
+    const hmap   = generateHeightmap(1)
+    const dummy  = new THREE.Object3D()
+    const matrix = new THREE.Matrix4()
 
-    // Seeded "random" for consistent placement
     let seed = 42
     const rand = () => {
       seed = (seed * 1664525 + 1013904223) & 0xffffffff
@@ -40,34 +54,39 @@ export default function Trees() {
     }
 
     for (let i = 0; i < TREE_COUNT; i++) {
-      const side = i % 2 === 0 ? 1 : -1
-      const x = side * (22 + rand() * 86)
-      const z = -120 + rand() * 242
-      const y = getHeightAt(x, z, hmap)
-      const scale = 0.7 + rand() * 0.7
-      const rotY = rand() * Math.PI * 2
+      // Keep trees off the central corridor so they don't block the view
+      const side  = i % 2 === 0 ? 1 : -1
+      const x     = side * (24 + rand() * 84)
+      const z     = -122 + rand() * 244
+      const y     = getHeightAt(x, z, hmap)
+      const scale = 0.65 + rand() * 0.85
+      const rotY  = rand() * Math.PI * 2
+      // Slight random tilt for natural look
+      const tiltX = (rand() - 0.5) * 0.06
+      const tiltZ = (rand() - 0.5) * 0.06
 
-      dummy.position.set(x, y + scale * 1.5, z)
-      dummy.rotation.set(0, rotY, 0)
-      dummy.scale.setScalar(scale)
+      // Trunk
+      dummy.position.set(x, y + scale * 1.75, z)
+      dummy.rotation.set(tiltX, rotY, tiltZ)
+      dummy.scale.set(scale, scale, scale)
       dummy.updateMatrix()
       trunkRef.current.setMatrixAt(i, dummy.matrix)
 
-      // Foliage cone sits above trunk
-      dummy.position.set(x, y + scale * 3.2, z)
-      dummy.scale.set(scale, scale * 1.1, scale)
+      // Foliage — sits above trunk
+      dummy.position.set(x, y + scale * 4.0, z)
+      dummy.scale.set(scale, scale * 1.15, scale)
       dummy.updateMatrix()
       foliageRef.current.setMatrixAt(i, dummy.matrix)
     }
 
-    trunkRef.current.instanceMatrix.needsUpdate = true
+    trunkRef.current.instanceMatrix.needsUpdate   = true
     foliageRef.current.instanceMatrix.needsUpdate = true
   }, [])
 
   return (
     <>
-      <instancedMesh ref={trunkRef} args={[trunkGeo, trunkMat, TREE_COUNT]} frustumCulled />
-      <instancedMesh ref={foliageRef} args={[foliageGeo, foliageMat, TREE_COUNT]} frustumCulled />
+      <instancedMesh ref={trunkRef}   args={[trunkGeo,   trunkMat,   TREE_COUNT]} frustumCulled={false} />
+      <instancedMesh ref={foliageRef} args={[foliageGeo, foliageMat, TREE_COUNT]} frustumCulled={false} />
     </>
   )
 }
