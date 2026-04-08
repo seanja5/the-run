@@ -1,98 +1,105 @@
 import { create } from 'zustand'
 
-export type TimeOfDay = 'auto' | 'day' | 'dusk' | 'night' | 'dawn'
+export type TimeOfDay = 'dawn' | 'day' | 'dusk' | 'night'
+export type Weather = 'clear' | 'calm' | 'windy' | 'rain' | 'thunder'
 
-export interface TimeConfig {
-  bgColor: string
-  fogColor: string
-  fogDensity: number
-  sunColor: string
-  sunIntensity: number
-  sunPosition: [number, number, number]
-  ambientColor: string
-  ambientIntensity: number
-  hemiTop: string
-  hemiGround: string
-  hemiIntensity: number
-}
-
-export const TIME_CONFIGS: Record<Exclude<TimeOfDay, 'auto'>, TimeConfig> = {
+export const TIME_PRESETS = {
+  dawn: {
+    label: 'Dawn',
+    skyTurbidity: 8,
+    skyRayleigh: 2.0,
+    sunPosition: [-0.5, 0.07, -1] as [number, number, number],
+    dirColor: '#FFAA66',
+    dirIntensity: 0.9,
+    ambColor: '#3D2550',
+    ambIntensity: 0.4,
+    hemiSky: '#FFAA88',
+    hemiGround: '#2D1E30',
+    hemiIntensity: 0.5,
+    bgColor: '#C07890',
+    exposure: 0.42,
+    fogColor: [0.722, 0.439, 0.502] as [number, number, number],
+    fogDensity: 0.0012,
+    oceanDeep: [0.10, 0.13, 0.21] as [number, number, number],
+    oceanSky:  [0.75, 0.47, 0.56] as [number, number, number],
+  },
   day: {
-    bgColor: '#5B99D4',
-    fogColor: '#A0C8E8',
-    fogDensity: 0.003,
-    sunColor: '#FFF5E0',
-    sunIntensity: 2.5,
-    sunPosition: [80, 90, -60],
-    ambientColor: '#6090B0',
-    ambientIntensity: 0.7,
-    hemiTop: '#4A90D9',
-    hemiGround: '#8B7355',
-    hemiIntensity: 0.6,
+    label: 'Day',
+    skyTurbidity: 6,
+    skyRayleigh: 1.0,
+    sunPosition: [0.3, 0.25, -1] as [number, number, number],
+    dirColor: '#FFFAE0',
+    dirIntensity: 1.8,
+    ambColor: '#6090A0',
+    ambIntensity: 0.55,
+    hemiSky: '#A0C8D8',
+    hemiGround: '#203040',
+    hemiIntensity: 0.65,
+    bgColor: '#87C4DC',
+    exposure: 0.65,
+    fogColor: [0.608, 0.722, 0.800] as [number, number, number],
+    fogDensity: 0.0008,
+    oceanDeep: [0.043, 0.165, 0.259] as [number, number, number],
+    oceanSky:  [0.530, 0.769, 0.863] as [number, number, number],
   },
   dusk: {
-    bgColor: '#1A0A20',
-    fogColor: '#2D1025',
-    fogDensity: 0.005,
-    sunColor: '#FF6B35',
-    sunIntensity: 1.8,
-    sunPosition: [130, 18, -40],
-    ambientColor: '#3D1C58',
-    ambientIntensity: 0.35,
-    hemiTop: '#4A2060',
-    hemiGround: '#1A0A20',
+    label: 'Dusk',
+    skyTurbidity: 15,
+    skyRayleigh: 2.5,
+    sunPosition: [0.6, 0.04, 1] as [number, number, number],
+    dirColor: '#FF6030',
+    dirIntensity: 0.85,
+    ambColor: '#2A1535',
+    ambIntensity: 0.35,
+    hemiSky: '#FF8040',
+    hemiGround: '#251020',
     hemiIntensity: 0.5,
+    bgColor: '#C04030',
+    exposure: 0.48,
+    fogColor: [0.627, 0.220, 0.125] as [number, number, number],
+    fogDensity: 0.0015,
+    oceanDeep: [0.10, 0.06, 0.15] as [number, number, number],
+    oceanSky:  [0.75, 0.25, 0.19] as [number, number, number],
   },
   night: {
-    bgColor: '#010306',
-    fogColor: '#030610',
-    fogDensity: 0.007,
-    sunColor: '#7A9ABB',
-    sunIntensity: 0.5,
-    sunPosition: [-60, 45, 80],
-    ambientColor: '#0D0A1E',
-    ambientIntensity: 0.25,
-    hemiTop: '#181630',
-    hemiGround: '#04030C',
+    label: 'Night',
+    skyTurbidity: 0.3,
+    skyRayleigh: 0.05,
+    sunPosition: [-1, -0.5, 0] as [number, number, number],
+    dirColor: '#3040A0',
+    dirIntensity: 0.12,
+    ambColor: '#050810',
+    ambIntensity: 0.25,
+    hemiSky: '#080C20',
+    hemiGround: '#010208',
     hemiIntensity: 0.3,
+    bgColor: '#010813',
+    exposure: 0.18,
+    fogColor: [0.008, 0.024, 0.063] as [number, number, number],
+    fogDensity: 0.003,
+    oceanDeep: [0.01, 0.03, 0.06] as [number, number, number],
+    oceanSky:  [0.01, 0.05, 0.12] as [number, number, number],
   },
-  dawn: {
-    bgColor: '#1A2045',
-    fogColor: '#2A1820',
-    fogDensity: 0.004,
-    sunColor: '#FFCD6B',
-    sunIntensity: 1.3,
-    sunPosition: [-90, 25, -70],
-    ambientColor: '#1A2A5E',
-    ambientIntensity: 0.45,
-    hemiTop: '#3A4080',
-    hemiGround: '#201810',
-    hemiIntensity: 0.5,
-  },
-}
+} as const
 
-function getAutoTime(): Exclude<TimeOfDay, 'auto'> {
-  const h = new Date().getHours()
-  if (h >= 5 && h < 9) return 'dawn'
-  if (h >= 9 && h < 17) return 'day'
-  if (h >= 17 && h < 21) return 'dusk'
-  return 'night'
-}
+export const WEATHER_PRESETS = {
+  clear:   { label: 'Clear',   waveScale: 1.0,  hasRain: false, hasThunder: false },
+  calm:    { label: 'Calm',    waveScale: 0.15, hasRain: false, hasThunder: false },
+  windy:   { label: 'Windy',   waveScale: 2.4,  hasRain: false, hasThunder: false },
+  rain:    { label: 'Rain',    waveScale: 1.6,  hasRain: true,  hasThunder: false },
+  thunder: { label: 'Thunder', waveScale: 2.0,  hasRain: true,  hasThunder: true  },
+} as const
 
-export function resolveTime(t: TimeOfDay): Exclude<TimeOfDay, 'auto'> {
-  return t === 'auto' ? getAutoTime() : t
-}
-
-interface SceneState {
-  activeProjectId: string | null
+interface SceneStore {
   timeOfDay: TimeOfDay
-  setActiveProject: (id: string | null) => void
+  weather: Weather
   setTimeOfDay: (t: TimeOfDay) => void
+  setWeather: (w: Weather) => void
 }
 
-export const useSceneStore = create<SceneState>((set) => ({
-  activeProjectId: null,
-  timeOfDay: 'auto',
-  setActiveProject: (id) => set({ activeProjectId: id }),
+export const useSceneStore = create<SceneStore>((set) => ({
+  timeOfDay: 'day',
+  weather: 'clear',
   setTimeOfDay: (t) => set({ timeOfDay: t }),
+  setWeather: (w) => set({ weather: w }),
 }))

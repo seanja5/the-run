@@ -3,9 +3,9 @@
 import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
-import Scene from './canvas/Scene'
-import ProjectBrowser from './ui/ProjectBrowser'
-import TimeSelector from './ui/TimeSelector'
+import OceanScene from './canvas/OceanScene'
+import SceneControls from './ui/SceneControls'
+import WeatherOverlay from './ui/WeatherOverlay'
 import SceneErrorBoundary from './SceneErrorBoundary'
 
 export default function RunExperience() {
@@ -13,41 +13,24 @@ export default function RunExperience() {
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <Canvas
         dpr={[1, 1.5]}
-        camera={{ position: [8, 58, -88], fov: 62, near: 0.5, far: 1200 }}
+        camera={{ position: [0, 16, 28], fov: 68, near: 0.1, far: 2000 }}
         gl={{ antialias: true, alpha: false }}
         style={{ position: 'absolute', inset: 0 }}
         onCreated={({ gl }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace
           gl.toneMapping = THREE.ACESFilmicToneMapping
-          gl.toneMappingExposure = 0.48
+          gl.toneMappingExposure = 0.65
         }}
       >
         <SceneErrorBoundary>
           <Suspense fallback={null}>
-            <Scene />
+            <OceanScene />
           </Suspense>
         </SceneErrorBoundary>
       </Canvas>
 
-      {/* HTML overlay */}
-      <div style={{
-        position: 'fixed',
-        top: 20,
-        left: 24,
-        fontFamily: 'var(--font-space-grotesk), sans-serif',
-        fontSize: '11px',
-        fontWeight: 600,
-        letterSpacing: '0.2em',
-        color: 'rgba(238,242,255,0.7)',
-        textTransform: 'uppercase',
-        zIndex: 30,
-        pointerEvents: 'none',
-      }}>
-        Sean Andrews
-      </div>
-
-      <TimeSelector />
-      <ProjectBrowser />
+      <SceneControls />
+      <WeatherOverlay />
     </div>
   )
 }

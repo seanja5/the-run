@@ -18,8 +18,14 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: var(--navy);
+  background: #041520;
   color: #fff;
+  cursor: crosshair;
+}
+
+@keyframes underwaterFlash {
+  0%   { opacity: 0.9; }
+  100% { opacity: 0; }
 }
 
 * {
