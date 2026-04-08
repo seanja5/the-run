@@ -1,7 +1,5 @@
 import * as THREE from 'three'
 
-export type CameraMode = 'autopilot' | 'manual'
-
 export interface NodeContent {
   description: string
   tech: string[]

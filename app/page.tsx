@@ -1,22 +1,26 @@
 'use client'
 
-import { useState } from 'react'
 import dynamic from 'next/dynamic'
-import IntroScreen from '@/components/ui/IntroScreen'
 
-// Dynamically import the heavy 3D experience so it doesn't block SSR
+// Dynamically import so Three.js never runs on the server
 const RunExperience = dynamic(() => import('@/components/RunExperience'), {
   ssr: false,
-  loading: () => null,
+  loading: () => (
+    <div style={{
+      width: '100vw', height: '100vh',
+      background: '#0D0A1E',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'var(--font-space-grotesk), sans-serif',
+      color: 'rgba(238,242,255,0.3)',
+      fontSize: '12px',
+      letterSpacing: '0.2em',
+      textTransform: 'uppercase',
+    }}>
+      Loading…
+    </div>
+  ),
 })
 
 export default function HomePage() {
-  const [started, setStarted] = useState(false)
-
-  return (
-    <main style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
-      {!started && <IntroScreen onStart={() => setStarted(true)} />}
-      {started && <RunExperience />}
-    </main>
-  )
+  return <RunExperience />
 }
