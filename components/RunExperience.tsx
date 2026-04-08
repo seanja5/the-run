@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
+import * as THREE from 'three'
 import { Preload } from '@react-three/drei'
 import Scene from './canvas/Scene'
 import HUD from './ui/HUD'
@@ -21,6 +22,11 @@ export default function RunExperience() {
         camera={{ position: [0, 28, -110], fov: 65, near: 0.5, far: 1000 }}
         gl={{ antialias: true, alpha: false }}
         style={{ position: 'absolute', inset: 0 }}
+        onCreated={({ gl }) => {
+          gl.outputColorSpace = THREE.SRGBColorSpace
+          gl.toneMapping = THREE.ACESFilmicToneMapping
+          gl.toneMappingExposure = 1.0
+        }}
       >
         <SceneErrorBoundary>
           <Suspense fallback={null}>
