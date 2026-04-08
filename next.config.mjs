@@ -4,16 +4,8 @@ const nextConfig = {
     'three',
     '@react-three/fiber',
     '@react-three/drei',
-    '@react-three/postprocessing',
     'simplex-noise',
   ],
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.glsl$/,
-      type: 'asset/source',
-    })
-    return config
-  },
 }
 
 export default nextConfig

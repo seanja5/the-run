@@ -1,4 +1,4 @@
-const gateGlowFrag = /* glsl */ `
+export const gateGlowFrag = /* glsl */ `
 uniform float uTime;
 uniform vec3  uColor;
 
@@ -7,4 +7,3 @@ void main() {
   gl_FragColor = vec4(uColor * pulse, 0.75 * pulse);
 }
 `
-export default gateGlowFrag

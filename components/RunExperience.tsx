@@ -10,6 +10,7 @@ import LodgePanel from './ui/LodgePanel'
 import EndScreen from './ui/EndScreen'
 import MobileControls from './ui/MobileControls'
 import LoadingScreen from './ui/LoadingScreen'
+import SceneErrorBoundary from './SceneErrorBoundary'
 
 export default function RunExperience() {
   return (
@@ -21,10 +22,12 @@ export default function RunExperience() {
         gl={{ antialias: true, alpha: false }}
         style={{ position: 'absolute', inset: 0 }}
       >
-        <Suspense fallback={null}>
-          <Scene />
-          <Preload all />
-        </Suspense>
+        <SceneErrorBoundary>
+          <Suspense fallback={null}>
+            <Scene />
+            <Preload all />
+          </Suspense>
+        </SceneErrorBoundary>
       </Canvas>
 
       {/* HTML overlay layer */}

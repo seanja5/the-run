@@ -6,7 +6,7 @@ import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 import type { NodeData } from '@/types'
 
-import gateGlowFrag from '@/shaders/gate-glow.frag'
+import { gateGlowFrag } from '@/shaders/gateGlow'
 
 interface GateProps {
   node: NodeData

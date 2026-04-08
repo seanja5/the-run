@@ -1,4 +1,24 @@
-const terrainFrag = /* glsl */ `
+export const terrainVert = /* glsl */ `
+uniform float uTime;
+
+varying vec3 vWorldPos;
+varying vec3 vNormal;
+varying float vHeight;
+
+void main() {
+  vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+  vNormal = normalize(normalMatrix * normal);
+  vHeight = position.y;
+
+  float shimmer = sin(position.x * 8.0 + uTime * 2.0) * 0.006
+                + sin(position.z * 6.0 + uTime * 1.5) * 0.004;
+  vec3 displaced = position + normal * shimmer * step(0.1, position.y);
+
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
+}
+`
+
+export const terrainFrag = /* glsl */ `
 uniform float uTime;
 uniform vec3  uSnowColor;
 uniform vec3  uRockColor;
@@ -37,4 +57,3 @@ void main() {
   gl_FragColor = vec4(baseColor, 1.0);
 }
 `
-export default terrainFrag

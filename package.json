@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@react-three/drei": "^9",
-    "@react-three/fiber": "^8",
+    "@react-three/fiber": "^9",
     "@react-three/postprocessing": "^2",
     "framer-motion": "^11",
     "gsap": "^3",

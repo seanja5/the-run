@@ -5,8 +5,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useRunStore } from '@/store/useRunStore'
 
-import snowParticleVert from '@/shaders/snow-particle.vert'
-import snowParticleFrag from '@/shaders/snow-particle.frag'
+import { snowParticleVert, snowParticleFrag } from '@/shaders/snowParticle'
 
 const COUNT = 4000
 

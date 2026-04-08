@@ -5,8 +5,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { generateHeightmap, TERRAIN_SIZE, HMAP_SIZE } from '@/lib/terrain'
 
-import terrainVert from '@/shaders/terrain.vert'
-import terrainFrag from '@/shaders/terrain.frag'
+import { terrainVert, terrainFrag } from '@/shaders/terrain'
 
 export default function Terrain() {
   const geometry = useMemo(() => {
